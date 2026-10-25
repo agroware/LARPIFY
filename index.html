@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LARPIFY - Fake Flex Dashboard</title>
+    
+    <!-- DYNAMIC FAVICON (Larpify Logo) -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%231a1a1a'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' font-family='Arial, sans-serif' font-weight='800' font-style='italic' font-size='60' fill='%2395bf47'%3EL%3C/text%3E%3C/svg%3E">
+
     <style>
         /* RESET & VARIABLES */
         :root {
@@ -89,7 +93,7 @@
             position: relative;
         }
 
-        .search-bar input {
+        .search-input {
             width: 100%;
             background-color: #303030;
             border: 1px solid #404040;
@@ -98,10 +102,17 @@
             color: white;
             font-size: 13px;
             outline: none;
+            transition: border 0.2s;
         }
         
-        .search-bar input::placeholder {
+        .search-input:focus, .search-input:hover {
+            border-color: #666;
+        }
+
+        .search-input[contenteditable="true"]:empty:before {
+            content: attr(data-placeholder);
             color: #a0a0a0;
+            pointer-events: none;
         }
 
         .search-icon {
@@ -580,6 +591,8 @@
             color: white;
             font-size: 11px;
             font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
         }
         .product-bar.secondary {
             background-color: #7ebaf0;
@@ -590,12 +603,14 @@
         [contenteditable="true"] {
             outline: none;
             border-bottom: 1px dashed transparent;
-            transition: border 0.2s;
+            transition: border 0.2s, background 0.2s;
             cursor: text;
+            display: inline-block;
+            min-width: 10px;
         }
         [contenteditable="true"]:hover, [contenteditable="true"]:focus {
             border-bottom: 1px dashed #999;
-            background-color: rgba(0,0,0,0.02);
+            background-color: rgba(0,0,0,0.03);
         }
 
         /* Tooltip Custom */
@@ -641,7 +656,7 @@
         </div>
         <div class="search-bar">
             <span class="search-icon">⌕</span>
-            <input type="text" placeholder="Search (Try typing 'fake money')">
+            <div class="search-input" contenteditable="true" data-placeholder="Search (Try typing 'fake money')"></div>
         </div>
         <div class="nav-actions">
             <span class="icon">🔔</span>
@@ -723,6 +738,7 @@
                 <div class="header-actions">
                     <button class="btn">📅</button>
                     <button class="btn">↗</button>
+                    <button class="btn" onclick="toggleFullScreen()" title="Toggle Fullscreen">⛶</button>
                     <button class="btn primary">Customize</button>
                 </div>
             </div>
@@ -966,14 +982,19 @@
         </main>
     </div>
 
-    <!-- Small script to make hoverable tooltips on the info icons (optional interactivity) -->
+    <!-- SCRIPT FOR FULLSCREEN TOGGLE -->
     <script>
-        document.querySelectorAll('.card-header').forEach(header => {
-            // Just a small visual trick to make it feel more interactive
-            header.addEventListener('mouseenter', () => {
-                // Could add tooltips here in a real app
-            });
-        });
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
     </script>
 </body>
 </html>
